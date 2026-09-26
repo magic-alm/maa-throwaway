@@ -1,0 +1,95 @@
+name: Dispatch MAA (public-target test)
+
+# Migration Phase 2 public-target test (magic-alm/magic-alm-autonomy#159):
+# Magic ALM Autonomy implementing into a *public* repository through the
+# MAA GitHub App. This workflow only dispatches MAA's auto-implement.yml with
+# this repository as the target; it calls no reusable workflow, so a pass
+# here proves nothing about reusable-workflow access.
+#
+# Required repository secret: MAA_DISPATCH_TOKEN (fine-grained token able to
+# dispatch actions in magic-alm/magic-alm-autonomy). The MAA App installation
+# on the owning organization must include this repository.
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue in this repository to implement'
+        required: true
+        default: '1'
+        type: string
+      provider:
+        description: 'MAA model provider'
+        required: false
+        default: 'openai'
+        type: choice
+        options:
+          - openai
+          - anthropic
+          - foundry
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch MAA auto implement
+        env:
+          GH_TOKEN: ${{ secrets.MAA_DISPATCH_TOKEN }}
+          MAA_REPO: magic-alm/magic-alm-autonomy
+          MAA_REF: main
+          TARGET_REPO: ${{ github.repository }}
+          TARGET_REF: main
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          MAA_PROVIDER: ${{ inputs.provider }}
+          TRIGGERING_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::MAA_DISPATCH_TOKEN is required to dispatch MAA."
+            exit 1
+          fi
+          case "$ISSUE_NUMBER" in
+            ''|*[!0-9]*)
+              echo "::error::issue_number must be a positive integer, got '${ISSUE_NUMBER}'."
+              exit 1
+              ;;
+          esac
+
+          work_item="${TARGET_REPO}#${ISSUE_NUMBER}"
+          publish_branch="maa/${ISSUE_NUMBER}-${GITHUB_RUN_ID}"
+          correlation_id="maa-throwaway-${ISSUE_NUMBER}-${GITHUB_RUN_ID}"
+
+          gh api \
+            --method POST \
+            "repos/${MAA_REPO}/actions/workflows/auto-implement.yml/dispatches" \
+            -f ref="${MAA_REF}" \
+            -f "inputs[work_item]=${work_item}" \
+            -f "inputs[policy]=target-repo/.github/maa-policy.json" \
+            -f "inputs[repo_path]=target-repo" \
+            -f "inputs[provider]=${MAA_PROVIDER}" \
+            -f "inputs[execution]=model" \
+            -f "inputs[offline]=false" \
+            -f "inputs[max_turns]=8" \
+            -f "inputs[max_retries]=2" \
+            -f "inputs[allowed_command]=node,npm,git" \
+            -f "inputs[verify]=" \
+            -f "inputs[target_repo]=${TARGET_REPO}" \
+            -f "inputs[target_ref]=${TARGET_REF}" \
+            -f "inputs[publish_branch]=${publish_branch}" \
+            -f "inputs[pr_close_mode]=auto" \
+            -f "inputs[push]=true" \
+            -f "inputs[triggering_actor]=${TRIGGERING_ACTOR}" \
+            -f "inputs[correlation_id]=${correlation_id}"
+
+          {
+            echo "## MAA dispatched"
+            echo
+            echo "- Work item: \`${work_item}\`"
+            echo "- Publish branch: \`${publish_branch}\`"
+            echo "- Correlation ID: \`${correlation_id}\`"
+            echo "- Runs: https://github.com/${MAA_REPO}/actions/workflows/auto-implement.yml"
+          } >> "$GITHUB_STEP_SUMMARY"

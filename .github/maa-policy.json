@@ -1,0 +1,75 @@
+{
+  "apiVersion": "magic-alm.auto/v1",
+  "kind": "AutoImplementPolicy",
+  "metadata": {
+    "name": "maa-throwaway"
+  },
+  "spec": {
+    "intake": {
+      "providers": ["github"],
+      "events": ["issue_comment:/auto implement"]
+    },
+    "context": {
+      "provider": "mcp",
+      "maxHydratedFiles": 8,
+      "maxBytesPerFile": 16000
+    },
+    "phasing": {
+      "enabled": false,
+      "maxEstimatedTurnsPerPhase": 8,
+      "requireExplicitFileScope": true
+    },
+    "routing": {
+      "triageModel": "small",
+      "planningModel": "medium",
+      "repairModel": "high",
+      "routes": {
+        "triage": {
+          "primary": { "provider": "anthropic", "tier": "small" },
+          "fallback": [{ "provider": "openai", "tier": "small" }]
+        },
+        "planning": {
+          "primary": { "provider": "anthropic", "tier": "medium" },
+          "fallback": [{ "provider": "openai", "tier": "medium" }]
+        },
+        "implementation": {
+          "primary": { "provider": "anthropic", "tier": "high" },
+          "fallback": [{ "provider": "openai", "tier": "high" }]
+        },
+        "repair": {
+          "primary": { "provider": "anthropic", "tier": "high" },
+          "fallback": [{ "provider": "openai", "tier": "high" }]
+        },
+        "finalize": {
+          "primary": { "provider": "anthropic", "tier": "small" },
+          "fallback": [{ "provider": "openai", "tier": "small" }]
+        }
+      }
+    },
+    "verification": {
+      "commands": ["npm test"],
+      "requireAllPass": true,
+      "stopConditions": [
+        {
+          "kind": "maxTurnsExceeded",
+          "threshold": 8,
+          "action": "abort",
+          "message": "Stop because turn budget is exhausted."
+        }
+      ]
+    },
+    "guardrails": {
+      "maxFilesChanged": 6,
+      "maxDiffLines": 200,
+      "requireDeclaredDependencies": true,
+      "requireTsconfigValidPaths": false,
+      "forbidPaths": [
+        ".github/workflows/**",
+        ".github/maa-policy.json"
+      ]
+    },
+    "approvals": {
+      "requireHumanReviewAboveSeverity": "P1"
+    }
+  }
+}
