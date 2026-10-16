@@ -1,3 +1,3 @@
-# maa-throwaway
+# maa-throwaway — benchmark case `unicode-slug`
 
-Throwaway test repo for magic-alm-autonomy smoke tests.
+Throwaway target for the paired analyst benchmark. Only `src/slug.js` is meant to change; `tests/slug.test.js` must stay byte-identical.
