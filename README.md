@@ -1,3 +1,3 @@
-# maa-throwaway
+# maa-throwaway — benchmark case `dst-arith`
 
-Throwaway test repo for magic-alm-autonomy smoke tests.
+Throwaway target for the paired analyst benchmark. Only `src/schedule.js` is meant to change; `tests/schedule.test.js` must stay byte-identical.
