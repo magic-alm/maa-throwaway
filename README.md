@@ -1,3 +1,3 @@
-# maa-throwaway
+# maa-throwaway — benchmark case `round-half-even`
 
-Throwaway test repo for magic-alm-autonomy smoke tests.
+Throwaway target for the paired analyst benchmark. Only `src/money.js` is meant to change; `tests/money.test.js` must stay byte-identical.
