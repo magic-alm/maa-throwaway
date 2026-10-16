@@ -1,3 +1,3 @@
-# maa-throwaway
+# maa-throwaway — benchmark case `pagination`
 
-Throwaway test repo for magic-alm-autonomy smoke tests.
+Throwaway target for the paired analyst benchmark. Only `src/paginate.js` is meant to change; `tests/paginate.test.js` must stay byte-identical.
