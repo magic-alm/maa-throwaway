@@ -1,3 +1,3 @@
-# maa-throwaway
+# maa-throwaway — benchmark case `multiline-regex`
 
-Throwaway test repo for magic-alm-autonomy smoke tests.
+Throwaway target for the paired analyst benchmark. Only `src/headers.js` is meant to change; `tests/headers.test.js` must stay byte-identical.
