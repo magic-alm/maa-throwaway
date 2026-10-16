@@ -1,3 +1,3 @@
-# maa-throwaway
+# maa-throwaway — benchmark case `cache-invalidation`
 
-Throwaway test repo for magic-alm-autonomy smoke tests.
+Throwaway target for the paired analyst benchmark. Only `src/cache.js` is meant to change; `tests/cache.test.js` must stay byte-identical.
