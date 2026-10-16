@@ -11,8 +11,6 @@ const cases = [
   ['MiXeD CaSe 123', 'mixed-case-123'],
   ['dots.and_underscores', 'dots-and-underscores'],
   ['', ''],
-  // Unicode: fold combining diacritics AND expand ligatures/special letters.
-  // NFD + strip marks handles the first; ß, æ, ø need an explicit mapping.
   ['Crème Brûlée', 'creme-brulee'],
   ['Straße & Ærø', 'strasse-aero'],
 ];
