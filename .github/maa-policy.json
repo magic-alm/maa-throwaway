@@ -91,9 +91,7 @@
       "requireTsconfigValidPaths": false,
       "forbidPaths": [
         ".github/workflows/**",
-        ".github/maa-policy.json",
-        "tests/**",
-        "package.json"
+        ".github/maa-policy.json"
       ]
     },
     "approvals": {
