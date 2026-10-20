@@ -2,12 +2,16 @@
   "apiVersion": "magic-alm.auto/v1",
   "kind": "AutoImplementPolicy",
   "metadata": {
-    "name": "maa-throwaway"
+    "name": "upfront-plan-review-live-smoke"
   },
   "spec": {
     "intake": {
-      "providers": ["github"],
-      "events": ["issue_comment:/auto implement"]
+      "providers": [
+        "github"
+      ],
+      "events": [
+        "issue_comment:/auto implement"
+      ]
     },
     "context": {
       "provider": "mcp",
@@ -25,29 +29,51 @@
       "repairModel": "high",
       "routes": {
         "triage": {
-          "primary": { "provider": "anthropic", "tier": "small" },
-          "fallback": [{ "provider": "openai", "tier": "small" }]
+          "primary": {
+            "provider": "foundry-anthropic",
+            "tier": "small",
+            "model": "claude-sonnet-5-5"
+          },
+          "fallback": []
         },
         "planning": {
-          "primary": { "provider": "anthropic", "tier": "medium" },
-          "fallback": [{ "provider": "openai", "tier": "medium" }]
+          "primary": {
+            "provider": "foundry-anthropic",
+            "tier": "medium",
+            "model": "claude-sonnet-5-5"
+          },
+          "fallback": []
         },
         "implementation": {
-          "primary": { "provider": "anthropic", "tier": "high" },
-          "fallback": [{ "provider": "openai", "tier": "high" }]
+          "primary": {
+            "provider": "foundry-anthropic",
+            "tier": "high",
+            "model": "claude-sonnet-5-5"
+          },
+          "fallback": []
         },
         "repair": {
-          "primary": { "provider": "anthropic", "tier": "high" },
-          "fallback": [{ "provider": "openai", "tier": "high" }]
+          "primary": {
+            "provider": "foundry-anthropic",
+            "tier": "high",
+            "model": "claude-sonnet-5-5"
+          },
+          "fallback": []
         },
         "finalize": {
-          "primary": { "provider": "anthropic", "tier": "small" },
-          "fallback": [{ "provider": "openai", "tier": "small" }]
+          "primary": {
+            "provider": "foundry-anthropic",
+            "tier": "small",
+            "model": "claude-sonnet-5-5"
+          },
+          "fallback": []
         }
       }
     },
     "verification": {
-      "commands": ["npm test"],
+      "commands": [
+        "npm test"
+      ],
       "requireAllPass": true,
       "stopConditions": [
         {
@@ -59,17 +85,34 @@
       ]
     },
     "guardrails": {
-      "maxFilesChanged": 6,
+      "maxFilesChanged": 1,
       "maxDiffLines": 200,
       "requireDeclaredDependencies": true,
       "requireTsconfigValidPaths": false,
       "forbidPaths": [
         ".github/workflows/**",
-        ".github/maa-policy.json"
+        ".github/maa-policy.json",
+        "tests/**",
+        "package.json"
       ]
     },
     "approvals": {
       "requireHumanReviewAboveSeverity": "P1"
+    },
+    "planReview": {
+      "required": true,
+      "maxPasses": 3,
+      "checks": [
+        {
+          "id": "slug-regression",
+          "command": "npm test",
+          "validatorPaths": [
+            "tests/slug.test.js",
+            "package.json"
+          ],
+          "producedPaths": []
+        }
+      ]
     }
   }
 }
