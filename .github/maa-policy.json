@@ -58,6 +58,18 @@
         }
       ]
     },
+    "planReview": {
+      "required": true,
+      "maxPasses": 3,
+      "checks": [
+        {
+          "id": "money-regression",
+          "command": "npm test",
+          "validatorPaths": ["tests/money.test.js", "package.json"],
+          "producedPaths": []
+        }
+      ]
+    },
     "guardrails": {
       "maxFilesChanged": 6,
       "maxDiffLines": 200,
