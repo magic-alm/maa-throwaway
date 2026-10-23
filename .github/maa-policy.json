@@ -58,6 +58,13 @@
         }
       ]
     },
+    "planReview": {
+      "required": true,
+      "maxPasses": 3,
+      "checks": [
+        { "id": "regression", "command": "npm test", "validatorPaths": ["tests/slug.test.js"] }
+      ]
+    },
     "guardrails": {
       "maxFilesChanged": 6,
       "maxDiffLines": 200,
