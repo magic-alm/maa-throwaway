@@ -15,7 +15,8 @@
       "maxBytesPerFile": 16000
     },
     "phasing": {
-      "enabled": false,
+      "enabled": true,
+      "subIssues": "none",
       "maxEstimatedTurnsPerPhase": 8,
       "requireExplicitFileScope": true
     },
