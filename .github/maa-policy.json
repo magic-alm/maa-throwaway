@@ -78,6 +78,7 @@
     },
     "approvals": {
       "requireHumanReviewAboveSeverity": "P1"
-    }
+    },
+    "billing": {}
   }
 }
