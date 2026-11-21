@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
-const { slugify } = require('../src/slug');
+const { slugify, slugifyAll } = require('../src/slug');
 
 const cases = [
   ['Hello World', 'hello-world'],
@@ -20,3 +20,12 @@ for (const [input, expected] of cases) {
     assert.strictEqual(slugify(input), expected);
   });
 }
+
+test("slugifyAll(['Ærø','Hello World']) equals element-wise slugify results", () => {
+  const input = ['Ærø', 'Hello World'];
+  assert.deepStrictEqual(slugifyAll(input), input.map(slugify));
+});
+
+test("slugifyAll('x') throws TypeError", () => {
+  assert.throws(() => slugifyAll('x'), { name: 'TypeError' });
+});
